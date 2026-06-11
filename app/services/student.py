@@ -7,7 +7,13 @@ logger = logging.getLogger(__name__)
 
 def get_all_students():
     logger.info("Fetching all students")
-    return Student.query.all()
+    try:
+        students = Student.query.all()
+        logger.info("Found %d students", len(students))
+        return students
+    except Exception as e:
+        logger.error("Error fetching all students: %s", str(e))
+        raise
 
 
 def get_student_by_id(student_id):
