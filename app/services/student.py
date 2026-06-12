@@ -1,6 +1,7 @@
 import logging
 from app import db
 from app.models.student import Student
+from sqlalchemy.exc import IntegrityError
 
 logger = logging.getLogger(__name__)
 
@@ -18,29 +19,36 @@ def get_all_students():
 
 def get_student_by_id(student_id):
     logger.info("Fetching student with id=%s", student_id)
-    return Student.query.get(student_id)
+    return db.session.get(Student, student_id)
 
 
 def create_student(data):
-    logger.info("Creating new student with email=%s", data.get("email"))
-
-    student = Student(
-        name=data["name"],
-        email=data["email"],
-        age=data["age"],
-        grade=data["grade"]
-    )
-    db.session.add(student)
-    db.session.commit()
-
-    logger.info("Student created successfully with id=%s", student.id)
-    return student
+    logger.info("Creating new student")
+    try:
+        student = Student(
+            name=data["name"],
+            email=data["email"],
+            age=data["age"],
+            grade=data["grade"]
+        )
+        db.session.add(student)
+        db.session.commit()
+        logger.info("Student created successfully with id=%s", student.id)
+        return student
+    except IntegrityError:
+        db.session.rollback()
+        logger.warning("Duplicate email: %s", data.get("email"))
+        raise ValueError("A student with this email already exists")
+    except Exception as e:
+        db.session.rollback()
+        logger.error("Error creating student: %s", str(e))
+        raise
 
 
 def update_student(student_id, data):
     logger.info("Updating student with id=%s", student_id)
 
-    student = Student.query.get(student_id)
+    student = db.session.get(Student, student_id)
     if not student:
         logger.warning("Student with id=%s not found", student_id)
         return None
@@ -58,7 +66,7 @@ def update_student(student_id, data):
 def delete_student(student_id):
     logger.info("Deleting student with id=%s", student_id)
 
-    student = Student.query.get(student_id)
+    student = db.session.get(Student, student_id)
     if not student:
         logger.warning("Student with id=%s not found", student_id)
         return False

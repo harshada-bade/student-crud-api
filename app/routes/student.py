@@ -19,15 +19,20 @@ def create():
     data = request.get_json()
     logger.info("POST /students called with data=%s", data)
 
-    # Validate required fields
     required_fields = ["name", "email", "age", "grade"]
     missing = [f for f in required_fields if f not in data]
     if missing:
         logger.warning("Missing fields: %s", missing)
         return jsonify({"error": f"Missing fields: {missing}"}), 400
 
-    student = create_student(data)
-    return jsonify(student.to_dict()), 201
+    try:
+        student = create_student(data)
+        return jsonify(student.to_dict()), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 409
+    except Exception as e:
+        logger.error("Failed to create student: %s", str(e))
+        return jsonify({"error": "Failed to create student"}), 500
 
 
 # GET /api/v1/students
