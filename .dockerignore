@@ -1,0 +1,30 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Database file
+*.db
+instance/
+
+# Environment variables
+.env
+
+# Git
+.git/
+.gitignore
+
+# Tests
+tests/
+
+# VS Code
+.vscode/
+
+# Mac system file
+.DS_Store
+
+# Postman
+postman/
