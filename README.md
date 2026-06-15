@@ -179,3 +179,72 @@ student-crud-api/
 | `make run` | Start the development server |
 | `make migrate` | Apply database migrations |
 | `make test` | Run all tests |
+
+
+## Docker
+
+### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) installed and running
+
+### Build the image
+```bash
+make docker-build
+```
+
+This builds the Docker image tagged as `student-api:1.0.0`
+
+### Run the container
+```bash
+make docker-run
+```
+
+This starts the container with:
+- App running on `http://127.0.0.1:5000`
+- Environment variables injected at runtime
+- Container running in background
+
+### View logs
+```bash
+docker logs -f student-api
+```
+
+### Stop the container
+```bash
+make docker-stop
+```
+
+### Test the API
+Once the container is running, test the healthcheck:
+http://127.0.0.1:5000/healthcheck
+
+
+Expected response:
+```json
+{ "status": "ok" }
+```
+
+---
+
+### Docker commands summary
+
+| Command | What it does |
+|---|---|
+| `make docker-build` | Builds the Docker image |
+| `make docker-run` | Runs the container in background |
+| `make docker-stop` | Stops and removes the container |
+| `docker logs -f student-api` | Stream live logs |
+| `docker ps` | Check if container is running |
+| `docker images` | List all built images |
+
+---
+
+### Image tagging
+
+This project follows [Semantic Versioning](https://semver.org/) for image tags:
+student-api:1.0.0   ← current version
+student-api:1.0.1   ← bug fix
+student-api:1.1.0   ← new feature
+student-api:2.0.0   ← breaking change
+
+
+Use of `latest` tag is discouraged — always use explicit version tags.
