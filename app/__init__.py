@@ -23,6 +23,10 @@ def create_app():
     # Import models so Flask-Migrate can detect them
     from app.models.student import Student
 
+    # Auto create tables if they don't exist
+    with app.app_context():
+        db.create_all()
+
     # Healthcheck route
     @app.route("/healthcheck", methods=["GET"])
     def healthcheck():
@@ -34,4 +38,3 @@ def create_app():
     app.register_blueprint(student_bp, url_prefix="/api/v1")
 
     return app
-  
