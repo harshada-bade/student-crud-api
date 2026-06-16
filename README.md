@@ -143,6 +143,39 @@ Expected output:
 
 ---
 
+## Running SQL Queries
+
+To inspect the database directly using SQL queries:
+
+### Connect to the database
+```bash
+sqlite3 instance/students.db
+```
+
+### Available commands
+
+```sql
+-- See all tables
+.tables
+
+-- See all students
+SELECT * FROM students;
+
+-- See a specific student by ID
+SELECT * FROM students WHERE id = 1;
+
+-- See only names and emails
+SELECT name, email FROM students;
+
+-- Count total students
+SELECT COUNT(*) FROM students;
+
+-- Exit the SQLite shell
+.quit
+```
+
+---
+
 ## Project Structure
 
 ```
