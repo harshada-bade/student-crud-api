@@ -7,7 +7,13 @@ install:
 	pip install -r requirements.txt
 
 run:
-	flask db upgrade && python run.py
+	python run.py
+
+migrate:
+	flask db migrate -m "migration"
+
+upgrade:
+	flask db upgrade
 
 test:
 	pytest tests/ -v
