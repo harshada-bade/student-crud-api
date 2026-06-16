@@ -7,9 +7,12 @@ from app.config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(Config)
+
+    if test_config:
+        app.config.update(test_config)
 
     # Setup logging
     logging.basicConfig(level=app.config["LOG_LEVEL"])
@@ -22,10 +25,6 @@ def create_app():
 
     # Import models so Flask-Migrate can detect them
     from app.models.student import Student
-
-    # Auto create tables if they don't exist
-    with app.app_context():
-        db.create_all()
 
     # Healthcheck route
     @app.route("/healthcheck", methods=["GET"])
