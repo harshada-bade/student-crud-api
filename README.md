@@ -279,5 +279,105 @@ student-api:1.0.1   ← bug fix
 student-api:1.1.0   ← new feature
 student-api:2.0.0   ← breaking change
 
-
 Use of `latest` tag is discouraged — always use explicit version tags.
+
+
+## Local Development with Docker Compose
+
+This is the recommended way to run the API and its dependencies (PostgreSQL) locally with minimal setup.
+
+### Prerequisites
+
+Make sure the following are installed on your machine:
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- `make` (comes pre-installed on Mac and Linux)
+
+If you don't have these installed, here are quick setup commands:
+
+```bash
+# Install Docker Desktop (Mac)
+brew install --cask docker
+
+# Verify make is installed (comes pre-installed on Mac)
+make --version
+```
+
+---
+
+### One-Command Setup
+
+```bash
+make compose-up
+```
+
+This single command will:
+1. Start the PostgreSQL database container
+2. Wait until the database is healthy
+3. Run database migrations automatically
+4. Build the API Docker image
+5. Start the API container
+
+Once complete, the API will be available at `http://127.0.0.1:5000`
+
+---
+
+### Available Make Targets
+
+| Command | What it does |
+|---|---|
+| `make db-start` | Starts only the PostgreSQL container and waits until healthy |
+| `make db-migrate` | Starts DB (if not running) and applies migrations |
+| `make compose-build` | Builds the API Docker image |
+| `make compose-up` | Full setup — DB, migrations, and API in one command |
+| `make compose-down` | Stops and removes all containers |
+| `make compose-logs` | Streams live logs from all containers |
+
+---
+
+### Manual Step-by-Step (if needed)
+
+If you prefer to run steps individually instead of `make compose-up`:
+
+```bash
+make db-start       # 1. Start database
+make db-migrate     # 2. Run migrations
+make compose-build  # 3. Build API image
+docker compose up -d api   # 4. Start API
+```
+
+---
+
+### Environment Variables
+
+Create a `.env` file in the project root (copy from `.env.example`):
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Description | Example |
+|---|---|---|
+| `DATABASE_URL` | Connection string for the database | `postgresql://postgres:password@localhost:5432/students` |
+| `LOG_LEVEL` | Logging verbosity | `DEBUG` or `INFO` |
+| `DB_PASSWORD` | PostgreSQL password used by docker-compose | `password` |
+
+---
+
+### Stopping Everything
+
+```bash
+make compose-down
+```
+
+This stops and removes both containers. Database data persists in a Docker volume between restarts.
+
+---
+
+### Image Tagging
+
+The API image is tagged using [Semantic Versioning](https://semver.org/):
+
+```
+student-api:1.0.0
+```
