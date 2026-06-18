@@ -79,4 +79,6 @@ def delete(student_id):
     if not success:
         return jsonify({"error": "Student not found"}), 404
 
-    return jsonify({"message": f"Student {student_id} deleted successfully"}), 200
+    return jsonify(
+        {"message": f"Student {student_id} deleted successfully"}
+    ), 200

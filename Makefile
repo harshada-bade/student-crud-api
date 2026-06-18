@@ -1,4 +1,4 @@
-.PHONY: install run migrate test docker-build docker-run docker-stop
+.PHONY: install run migrate upgrade test lint docker-build docker-run docker-stop db-start db-migrate compose-build compose-up compose-down compose-logs api-start
 
 VERSION=1.0.0
 IMAGE_NAME=student-api
@@ -66,3 +66,8 @@ compose-logs:
 	docker compose logs -f
 
 api-start: compose-up
+
+# ── Linter targets ──────────────────────────────────
+
+lint:
+	flake8 app/ tests/

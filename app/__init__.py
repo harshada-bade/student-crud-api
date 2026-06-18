@@ -7,6 +7,7 @@ from app.config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 
+
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(Config)
@@ -24,7 +25,7 @@ def create_app(test_config=None):
     migrate.init_app(app, db)
 
     # Import models so Flask-Migrate can detect them
-    from app.models.student import Student
+    from app.models.student import Student  # noqa: F401
 
     # Healthcheck route
     @app.route("/healthcheck", methods=["GET"])
