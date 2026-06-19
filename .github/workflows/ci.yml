@@ -1,0 +1,38 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+      - 'tests/**'
+      - 'requirements.txt'
+      - 'Dockerfile'
+      - 'Makefile'
+  workflow_dispatch:
+
+jobs:
+  build-test-lint-push:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build API (install dependencies)
+        run: make install
+
+      - name: Run tests
+        run: make test
+
+      - name: Run code linting
+        run: make lint
+
+      - name: Docker login
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Docker build and push
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/student-api:1.0.0 .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/student-api:1.0.0

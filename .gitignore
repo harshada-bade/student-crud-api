@@ -19,3 +19,6 @@ __pycache__/
 
 # Pytest cache
 .pytest_cache/
+
+# GitHub Actions self-hosted runner
+actions-runner/
