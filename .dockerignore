@@ -28,3 +28,11 @@ tests/
 
 # Postman
 postman/
+
+# Documentation and project meta files (not needed at runtime)
+README.md
+Makefile
+docker-compose.yml
+docker-compose.yaml
+Dockerfile
+.dockerignore
