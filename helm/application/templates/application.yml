@@ -1,0 +1,83 @@
+# ── Namespace ────────────────────────────────────────────────
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace }}
+
+---
+# ── ConfigMap ────────────────────────────────────────────────
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: student-api-config
+  namespace: {{ .Values.namespace }}
+data:
+  LOG_LEVEL: {{ .Values.env.logLevel | quote }}
+  DB_HOST: {{ .Values.database.host | quote }}
+  DB_PORT: {{ .Values.database.port | quote }}
+  DB_NAME: {{ .Values.database.name | quote }}
+  DB_USER: {{ .Values.database.user | quote }}
+
+---
+# ── Deployment ───────────────────────────────────────────────
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-api
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: student-api
+  template:
+    metadata:
+      labels:
+        app: student-api
+    spec:
+      nodeSelector:
+        type: {{ .Values.nodeSelector.type }}
+      initContainers:
+        - name: db-migrate
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["flask", "db", "upgrade"]
+          envFrom:
+            - configMapRef:
+                name: student-api-config
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: student-api-db-secret
+                  key: DATABASE_URL
+      containers:
+        - name: student-api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: student-api-config
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: student-api-db-secret
+                  key: DATABASE_URL
+
+---
+# ── Service ──────────────────────────────────────────────────
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-api-service
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: student-api
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 5000
+      nodePort: {{ .Values.service.nodePort }}
