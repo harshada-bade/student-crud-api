@@ -1,0 +1,14 @@
+server:
+  nodeSelector:
+    type: dependent_services
+
+  dataStorage:
+    enabled: true
+    size: 1Gi
+
+  dev:
+    enabled: true
+    devRootToken: "root"
+
+injector:
+  enabled: false
