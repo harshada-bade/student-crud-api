@@ -1,0 +1,21 @@
+global:
+  postgresql:
+    auth:
+      username: postgres
+      database: students
+      existingSecret: postgresql-secret
+      secretKeys:
+        userPasswordKey: postgres-password
+
+primary:
+  nodeSelector:
+    type: database
+
+  persistence:
+    enabled: true
+    size: 1Gi
+
+volumePermissions:
+  enabled: true
+
+fullnameOverride: postgresql
