@@ -17,12 +17,20 @@ FROM python:3.9-slim AS runner
 # Set working directory
 WORKDIR /app
 
+# Create a non-root user and group
+RUN groupadd --gid 1000 appuser \
+    && useradd --uid 1000 --gid appuser --shell /bin/bash --create-home appuser
+
 # Copy installed packages from builder stage
 COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy application code
 COPY . .
+
+RUN chown -R appuser:appuser /app
+
+USER appuser 
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
