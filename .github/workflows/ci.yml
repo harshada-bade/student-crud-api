@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -34,3 +34,12 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/student-api:${{ github.sha }} .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/student-api:${{ github.sha }}
+  
+      - name: Update Helm values with new image tag
+        run: |
+          sed -i '' "s|tag: .*|tag: \"${{ github.sha }}\"|" helm/application/values.yaml
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add helm/application/values.yaml
+          git commit -m "ci: update image tag to ${{ github.sha }}" || echo "No changes to commit"
+          git push origin main
