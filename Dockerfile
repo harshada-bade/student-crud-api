@@ -17,6 +17,9 @@ FROM python:3.9-slim AS runner
 # Set working directory
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Create a non-root user and group
 RUN groupadd --gid 1000 appuser \
     && useradd --uid 1000 --gid appuser --shell /bin/bash --create-home appuser

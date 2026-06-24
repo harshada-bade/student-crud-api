@@ -8,3 +8,6 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG")
+    DEBUG = os.getenv("FLASK_DEBUG", "False").lower() == "true"
+    PORT = int(os.getenv("PORT", 5000))
+
