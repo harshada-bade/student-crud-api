@@ -10,4 +10,3 @@ class Config:
     LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG")
     DEBUG = os.getenv("FLASK_DEBUG", "False").lower() == "true"
     PORT = int(os.getenv("PORT", 5000))
-
