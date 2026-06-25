@@ -1,0 +1,34 @@
+prometheus:
+  prometheusSpec:
+    nodeSelector:
+      type: dependent_services
+
+prometheusOperator:
+  nodeSelector:
+    type: dependent_services
+
+grafana:
+  nodeSelector:
+    type: dependent_services
+  service:
+    type: NodePort
+
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki.observability.svc.cluster.local:3100
+      access: proxy
+      isDefault: false
+
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      type: dependent_services
+
+kube-state-metrics:
+  nodeSelector:
+    type: dependent_services
+
+prometheus-node-exporter:
+  hostNetwork: true
+  hostPID: true
