@@ -5,7 +5,8 @@ on:
     paths:
       - 'app/**'
       - 'tests/**'
-      - 'requirements.txt'
+      - 'pyproject.toml'
+      - 'uv.lock'
       - 'Dockerfile'
       - 'Makefile'
   workflow_dispatch:
@@ -17,6 +18,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/0.11.23/install.sh | sh && echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Build API (install dependencies)
         run: make install

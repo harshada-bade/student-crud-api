@@ -1,15 +1,16 @@
 # ── Stage 1: Builder ──────────────────────────────────────────
 FROM python:3.9-slim AS builder
 
+COPY --from=ghcr.io/astral-sh/uv:0.11.23 /uv /usr/local/bin/uv
+
 # Set working directory
 WORKDIR /app
 
-# Copy only requirements first (for better layer caching)
-COPY requirements.txt .
+# Copy lockfile and project metadata first (for better layer caching)
+COPY pyproject.toml uv.lock ./
 
-# Install dependencies
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+# Install runtime dependencies into a virtual environment
+RUN uv sync --frozen --no-dev --no-install-project
 
 # ── Stage 2: Runner ───────────────────────────────────────────
 FROM python:3.9-slim AS runner
@@ -24,9 +25,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl \
 RUN groupadd --gid 1000 appuser \
     && useradd --uid 1000 --gid appuser --shell /bin/bash --create-home appuser
 
-# Copy installed packages from builder stage
-COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
+# Copy the virtual environment from builder stage
+COPY --from=builder /app/.venv /app/.venv
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy application code
 COPY . .

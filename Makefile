@@ -4,10 +4,10 @@ VERSION=1.0.0
 IMAGE_NAME=student-api
 
 install:
-	pip install -r requirements.txt
+	uv sync
 
 run:
-	python run.py
+	uv run python run.py
 
 migrate:
 	flask db migrate -m "migration"
@@ -16,7 +16,7 @@ upgrade:
 	flask db upgrade
 
 test:
-	pytest tests/ -v
+	uv run pytest tests/ -v
 
 # ── Docker targets ──────────────────────────────────
 
@@ -70,4 +70,4 @@ api-start: compose-up
 # ── Linter targets ──────────────────────────────────
 
 lint:
-	flake8 app/ tests/
+	uv run flake8 app/ tests/
