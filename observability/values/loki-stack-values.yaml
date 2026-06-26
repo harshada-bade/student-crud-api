@@ -5,9 +5,10 @@ loki:
     enabled: true
     size: 1Gi
   securityContext:
-    runAsUser: 0
-    runAsGroup: 0
-    fsGroup: 0
+    fsGroup: 10001
+    runAsGroup: 10001
+    runAsNonRoot: true
+    runAsUser: 10001
 
 promtail:
   config:
@@ -33,5 +34,3 @@ promtail:
           target_label: container
       pipeline_stages:
         - docker: {}
-
-

@@ -1,0 +1,50 @@
+deploymentMode: SingleBinary
+
+loki:
+  useTestSchema: true
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: filesystem
+
+singleBinary:
+  replicas: 1
+  nodeSelector:
+    type: dependent_services
+  podSecurityContext:
+    fsGroup: 10001
+    runAsGroup: 10001
+    runAsNonRoot: true
+    runAsUser: 10001
+  initContainers:
+    - name: fix-permissions
+      image: busybox
+      command: ['sh', '-c', 'chown -R 10001:10001 /var/loki']
+      securityContext:
+        runAsUser: 0
+        runAsNonRoot: false
+      volumeMounts:
+        - name: storage
+          mountPath: /var/loki
+  persistence:
+    enabled: true
+    size: 1Gi
+
+read:
+  replicas: 0
+write:
+  replicas: 0
+backend:
+  replicas: 0
+
+gateway:
+  enabled: false
+
+minio:
+  enabled: false
+
+chunksCache:
+  enabled: false
+
+test:
+  enabled: false
