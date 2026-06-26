@@ -2,7 +2,7 @@ namespace: student-api
 
 image:
   repository: harshadabade/student-api
-  tag: "1.0.0"
+  tag: "e4d2adbd6a5a339b2f16a60c2e5e9372f0f27d5d"
   pullPolicy: IfNotPresent
 
 replicaCount: 1
