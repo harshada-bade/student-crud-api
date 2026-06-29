@@ -10,7 +10,7 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 # Install runtime dependencies into a virtual environment
-RUN uv sync --frozen --no-dev --no-install-project
+RUN python3 -m venv /app/.venv && uv sync --frozen --no-dev --no-install-project
 
 # ── Stage 2: Runner ───────────────────────────────────────────
 FROM python:3.9-slim AS runner

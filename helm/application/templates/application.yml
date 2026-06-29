@@ -40,7 +40,7 @@ spec:
       initContainers:
         - name: db-migrate
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          command: ["flask", "db", "upgrade"]
+          command: ["/bin/sh", "-c", "flask db upgrade"]
           envFrom:
             - configMapRef:
                 name: student-api-config
