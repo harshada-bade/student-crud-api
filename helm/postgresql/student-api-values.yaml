@@ -18,4 +18,12 @@ primary:
 volumePermissions:
   enabled: true
 
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: observability
+    labels:
+      release: kube-prometheus-stack
+
 fullnameOverride: postgresql
