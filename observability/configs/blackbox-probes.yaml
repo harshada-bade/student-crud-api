@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Probe
+metadata:
+  name: internal-endpoints
+  namespace: observability
+  labels:
+    release: kube-prometheus-stack
+spec:
+  jobName: blackbox-internal-endpoints
+  prober:
+    url: blackbox-exporter-prometheus-blackbox-exporter.observability.svc.cluster.local:9115
+  module: http_2xx
+  targets:
+    staticConfig:
+      static:
+        - http://student-api-service.student-api.svc.cluster.local:5000/healthcheck
+        - http://vault.vault.svc.cluster.local:8200/v1/sys/health
+        - http://argocd-server.argocd.svc.cluster.local:80
+      labels:
+        team: student-api
