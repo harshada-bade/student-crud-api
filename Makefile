@@ -1,4 +1,4 @@
-.PHONY: install run migrate upgrade test lint clean help docker-build docker-run docker-stop db-start db-migrate compose-build compose-up compose-down compose-logs api-start
+.PHONY: install run migrate upgrade test lint clean help docker-build docker-run docker-stop db-start db-migrate compose-build compose-up compose-down compose-logs api-start info prometheus-pf alertmanager-pf
 
 VERSION=1.0.0
 IMAGE_NAME=student-api
@@ -72,6 +72,34 @@ api-start: compose-up
 lint:
 	uv run flake8 app/ tests/
 
+# ── Service Info ──────────────────────────────────
+
+info:
+	@MINIKUBE_IP=$$(minikube ip) && \
+	echo "" && \
+	echo "=== Grafana ===" && \
+	echo "  URL:      http://$$MINIKUBE_IP:30119" && \
+	echo "  Username: admin" && \
+	echo "  Password: $$(kubectl get secret kube-prometheus-stack-grafana -n observability -o jsonpath='{.data.admin-password}' | base64 -d)" && \
+	echo "" && \
+	echo "=== ArgoCD ===" && \
+	echo "  URL:      http://$$MINIKUBE_IP:30080" && \
+	echo "  Username: admin" && \
+	echo "  Password: $$(kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d)" && \
+	echo "" && \
+	echo "=== Prometheus (no auth) ===" && \
+	echo "  Run: make prometheus-pf  -> http://localhost:9090" && \
+	echo "" && \
+	echo "=== Alertmanager (no auth) ===" && \
+	echo "  Run: make alertmanager-pf  -> http://localhost:9093" && \
+	echo ""
+
+prometheus-pf:
+	kubectl port-forward svc/prometheus-kube-prometheus-stack-prometheus -n observability 9090:9090
+
+alertmanager-pf:
+	kubectl port-forward svc/alertmanager-kube-prometheus-stack-alertmanager -n observability 9093:9093
+
 # ── Cleanup ──────────────────────────────────
 
 clean:
@@ -99,3 +127,6 @@ help:
 	@echo "  compose-up     Start the full stack via Docker Compose"
 	@echo "  compose-down   Stop all Docker Compose services"
 	@echo "  compose-logs   Tail Docker Compose logs"
+	@echo "  info           Print URLs and credentials for all service UIs"
+	@echo "  prometheus-pf  Port-forward Prometheus to http://localhost:9090"
+	@echo "  alertmanager-pf Port-forward Alertmanager to http://localhost:9093"
