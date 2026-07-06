@@ -98,7 +98,7 @@ prometheus-pf:
 	kubectl port-forward svc/prometheus-kube-prometheus-stack-prometheus -n observability 9090:9090
 
 alertmanager-pf:
-	kubectl port-forward svc/alertmanager-kube-prometheus-stack-alertmanager -n observability 9093:9093
+	kubectl port-forward svc/kube-prometheus-stack-alertmanager -n observability 9093:9093
 
 # ── Cleanup ──────────────────────────────────
 
