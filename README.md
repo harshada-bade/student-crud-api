@@ -233,6 +233,8 @@ student-crud-api/
 | `make info` | Print URLs and credentials for all service UIs |
 | `make prometheus-pf` | Port-forward Prometheus to `http://localhost:9090` |
 | `make alertmanager-pf` | Port-forward Alertmanager to `http://localhost:9093` |
+| `make grafana` | Open Grafana in browser via minikube tunnel |
+| `make argocd` | Open ArgoCD in browser via minikube tunnel |
 
 
 ## Docker
@@ -528,7 +530,10 @@ This prints live URLs and credentials for Grafana and ArgoCD, and reminds you of
 
 ### Grafana
 
-- URL: `http://<minikube-ip>:30119`
+```bash
+make grafana
+```
+
 - Username: `admin`
 - Password: retrieved via `make info`
 
