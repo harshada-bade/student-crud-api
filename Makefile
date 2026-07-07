@@ -1,4 +1,4 @@
-.PHONY: install run migrate upgrade test lint clean help docker-build docker-run docker-stop db-start db-migrate compose-build compose-up compose-down compose-logs api-start info prometheus-pf alertmanager-pf
+.PHONY: install run migrate upgrade test lint clean help docker-build docker-run docker-stop db-start db-migrate compose-build compose-up compose-down compose-logs api-start info prometheus-pf alertmanager-pf grafana argocd
 
 VERSION=1.0.0
 IMAGE_NAME=student-api
@@ -100,6 +100,12 @@ prometheus-pf:
 alertmanager-pf:
 	kubectl port-forward svc/kube-prometheus-stack-alertmanager -n observability 9093:9093
 
+grafana:
+	minikube service kube-prometheus-stack-grafana -n observability
+
+argocd:
+	minikube service argocd-server -n argocd
+
 # ── Cleanup ──────────────────────────────────
 
 clean:
@@ -130,3 +136,5 @@ help:
 	@echo "  info           Print URLs and credentials for all service UIs"
 	@echo "  prometheus-pf  Port-forward Prometheus to http://localhost:9090"
 	@echo "  alertmanager-pf Port-forward Alertmanager to http://localhost:9093"
+	@echo "  grafana        Open Grafana in browser via minikube tunnel"
+	@echo "  argocd         Open ArgoCD in browser via minikube tunnel"
